@@ -14,6 +14,7 @@ const PlaceList = props => {
                     <ListItem 
                         placeImage = {info.item.image}
                         placeName = {info.item.value}
+                        usia = {info.item.value}
                         onPressItem = {() => {props.onItemSelected(info.item.key)}}
                     />
                 )

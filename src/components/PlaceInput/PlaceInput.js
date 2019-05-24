@@ -1,72 +1,44 @@
-import React, {Component} from 'react'
-import {View, TextInput, Button, StyleSheet} from 'react-native'
+import React, { Component } from 'react'
+import { ScrollView, View, TextInput, Button, StyleSheet } from 'react-native'
 
 import DefaultInput from '../../components/UI/DefaultInput/DefaultInput'
 
-class PlaceInput extends Component{
-    state = {
-        placeName: ''
-    }
+class PlaceInput extends Component {
 
     placeNameChangedHandler = (val) => {
-        this.setState({placeName: val})
+        this.setState({ placeName: val })
     }
 
-    render(){
-        return(
+    render() {
+        return (
             <DefaultInput
-                placeholder='Place Name'
-                value = {this.state.placeName}
-                onChangeText = {this.placeNameChangedHandler}
-            />
-        )
+                    placeholder='Name'
+                    value={this.props.placeName}
+                    onChangeText={this.props.onChangeText}
+                />
+        );
     }
 }
 
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        alignItems: 'center'
+    },
+    placeholder: {
+        borderWidth: 1,
+        borderColor: 'black',
+        backgroundColor: '#eee',
+        width: '80%',
+        height: 150
+    },
+    button: {
+        margin: 8
+    },
+    previewImage: {
+        width: '100%',
+        height: '100%'
+    }
+})
+
 export default PlaceInput;
-
-// import React, {Component} from 'react'
-// import {View, TextInput, Button, StyleSheet} from 'react-native'
-
-// class PlaceInput extends Component{
-//     state = {
-//         placeName: ''
-//     }
-
-//     placeNameChangedHandler = (val) => {
-//         this.setState({placeName: val})
-//     }
-
-//     render(){
-//         return(
-//             <View style={styles.inputContainer}>
-//                 <TextInput
-//                     placeholder = 'An Awesome Place'
-//                     onChangeText = {this.placeNameChangedHandler}
-//                     style={styles.placeInput}
-//                 />
-//                 <Button
-//                     style={styles.Button} title='Add'
-//                     onPress={() => {this.props.onPlaceAdded(this.state.placeName)}}
-//                 />
-//             </View>
-//         )
-//     }
-// }
-
-// const styles = StyleSheet.create({
-//     inputContainer: {
-//         width: '100%',
-//         flexDirection: 'row',
-//         justifyContent: 'space-between',
-//         alignItems: 'center'
-//     },
-//     placeInput: {
-//         width: '70%'
-//     },
-//     placeButton: {
-//         width:'30%'
-//     }
-// })
-
-// export default PlaceInput;

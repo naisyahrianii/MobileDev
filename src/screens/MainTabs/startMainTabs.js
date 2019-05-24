@@ -43,14 +43,26 @@ const startTabs = () => {
             drawer: {
                 left: {
                     screen: 'jc8reactnative.SideDrawerScreen',
-                    
+                    label:'Logout',
+	                title:'Logout'
                 }
             }
         })
     })
 }
 
-export default startTabs
+const backToRoot = () => {
+    Navigation.startSingleScreenApp({
+        screen: {
+            screen: 'jc8reactnative.AuthScreen',
+            title: 'Login'
+        }
+    })
+}
+
+module.exports = {
+    backToRoot, startTabs
+}
 
 
 

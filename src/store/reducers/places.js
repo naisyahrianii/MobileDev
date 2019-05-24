@@ -1,6 +1,7 @@
 import { 
     ADD_PLACE,
-    DELETE_PLACE
+    DELETE_PLACE,
+    CREATE_DATA
 } from '../actions/actionTypes'
 
 const initialState = {
@@ -27,6 +28,12 @@ const reducer = (state = initialState, action) => {
                 places: state.places.filter(place => {
                     return place.key !== action.placeKey
                 })
+            }
+
+        case CREATE_DATA:
+            return {
+                ...state,
+                places: action.payload
             }
         default:
             return state

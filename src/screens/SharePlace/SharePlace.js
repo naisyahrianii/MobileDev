@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { View, TextInput, Text, Button, StyleSheet, ScrollView, Image } from 'react-native';
 import { connect } from 'react-redux'
 
-import { addPlace } from '../../store/actions/index'
+import { addPlace, createData } from '../../store/actions/index'
+import {Fire} from '../../firebase/index'
 
 import imageBackground from '../../assets/react-native-wide.png'
 import imageBackgroundWorld from '../../assets/world-map.jpg'
@@ -10,18 +11,22 @@ import DefaultInput from '../../components/UI/DefaultInput/DefaultInput'
 import HeadingText from '../../components/UI/HeadingText/HeadingText'
 import MainText from '../../components/UI/MainText/MainText'
 import PlaceInput from '../../components/PlaceInput/PlaceInput'
-import PickLocation from '../../components/PickLocation/PickLocation'
-import PickImage from '../../components/PickImage/PickImage'
+import UsiaInput from '../../components/UsiaInput/UsiaInput'
+import JabatanInput from '../../components/JabatanInput/JabatanInput'
 
 class SharePlaceScreen extends Component {
+    state = {
+        placeName : '',
+        usia:'',
+        jabatan:''
+    }
+
     constructor(props) {
         super(props)
         this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent);
     }
 
     onNavigatorEvent = event => {
-        console.log(event);
-        
         if (event.type === 'NavBarButtonPress'){
             if (event.id === 'sideDrawerToggle'){
                 this.props.navigator.toggleDrawer({
@@ -31,9 +36,37 @@ class SharePlaceScreen extends Component {
         }
     }
 
+    placeNameChangedHandler = (val) => {
+        this.setState({
+            placeName: val
+        })
+    }
 
-    placeAddedHandler = placeName => {
-        this.props.onAddPlace(placeName)
+    usiaChangeHandler = (val) =>{
+        this.setState({
+            usia: val
+        })
+    }
+
+    jabatanChangeHandler = (val) =>{
+        this.setState({
+            jabatan: val
+        })
+    }
+
+    placeAddedHandler = () => {
+        var places = Fire.database().ref('places')
+        if(this.state.placeName.trim() !== ''){
+            // input data ke firebase
+            places.push({
+                name: this.state.placeName,
+                usia: this.state.usia,
+                jabatan: this.state.jabatan
+            }).then(res => {
+                // ambil semua data di firebase, lempar ke redux
+                places.once('value', this.props.onCreateData, (err)=>{console.log(err)})
+            })
+        }
     }
 
     render () {
@@ -41,12 +74,21 @@ class SharePlaceScreen extends Component {
             <ScrollView>
                 <View style={styles.container}>
                     <MainText>
-                        <HeadingText>Share Place with Us !</HeadingText>
+                        <HeadingText>Input Data Karyawan !</HeadingText>
                     </MainText>
-                    <PickImage/>
-                    <PickLocation/>
-                    <PlaceInput/>
-                        <Button title='Share Place'/>
+                    <PlaceInput
+                        placeName = {this.state.placeName}
+                        onChangeText = {this.placeNameChangedHandler}
+                    />
+                    <UsiaInput 
+                        usia = {this.state.usia}
+                        onChangeText = {this.usiaChangeHandler}
+                    />
+                    <JabatanInput 
+                        jabatan = {this.state.jabatan}
+                        onChangeText = {this.jabatanChangeHandler}
+                    />
+                    <Button title='Input' onPress={this.placeAddedHandler}/>
                 </View>
             </ScrollView>
         );
@@ -76,8 +118,15 @@ const styles = StyleSheet.create({
 
 const mapDispatchToProps = dispatch => {
     return {
-        onAddPlace: placeName => dispatch(addPlace(placeName))
+        onAddPlace: placeName => dispatch(addPlace(placeName)),
+        onCreateData: items => dispatch(createData(items))
     }
 }
 
-export default connect(null, mapDispatchToProps)(SharePlaceScreen)
+const mapStateToProps = state => {
+    return {
+        user: state.auth.user.uid
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SharePlaceScreen)

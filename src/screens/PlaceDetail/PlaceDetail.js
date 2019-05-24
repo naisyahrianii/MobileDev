@@ -1,13 +1,18 @@
 import React, { Component } from 'react'
 import {View, Image, Text, Button, StyleSheet} from 'react-native'
+import {Fire} from '../../firebase/index'
 import { connect } from 'react-redux'
 
 import { deletePlace } from '../../store/actions/index'
 
 class PlaceDetail extends Component {
     placeDeletedHandler = () => {
+        var places = Fire.database().ref('places') 
         this.props.onDeletePlace(this.props.selectedPlace.key)
+        places.child(this.props.selectedPlace.key).remove()
         this.props.navigator.pop()
+       
+        
     }
 
     render() {
@@ -18,7 +23,13 @@ class PlaceDetail extends Component {
                         style={styles.placeImage}
                         source={this.props.selectedPlace.image}
                     />
-                    <Text style={styles.placeName}>{this.props.selectedPlace.value}</Text>
+                    <Text style={styles.placeName}>Nama: {this.props.selectedPlace.value}</Text>
+                    <Text style={styles.placeName}>Usia: {this.props.selectedPlace.usia}</Text>
+                    <Text style={styles.placeName}>Jabatan:{this.props.selectedPlace.jabatan}</Text>
+
+
+                    
+
                 </View>
                 <Button title='Delete' color='red' onPress={this.placeDeletedHandler}/>
             </View>
@@ -50,4 +61,10 @@ const mapDispatchToProps = dispatch => {
     }
 }
 
-export default connect(null, mapDispatchToProps)(PlaceDetail)
+const mapStateToProps = state => {
+    return {
+        uid: state.auth.user.uid
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PlaceDetail)
